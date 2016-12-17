@@ -6,7 +6,7 @@ public class Item implements IItem {
 	
 	private double netPrice;
 	private Categories category;
-	private boolean imported; 
+	private boolean imported;
 	
 	
 	public Item(double netPrice, Categories category, boolean imported) {
@@ -16,18 +16,15 @@ public class Item implements IItem {
 	}
 
 	public double getNetPrice() {
-		// TODO Auto-generated method stub
-		return 0;
+		return netPrice;
 	}
 
 	public Categories getCategory() {
-		// TODO Auto-generated method stub
-		return null;
+		return category;
 	}
 
 	public boolean isImported() {
-		// TODO Auto-generated method stub
-		return false;
+		return imported;
 	}
 	
 	

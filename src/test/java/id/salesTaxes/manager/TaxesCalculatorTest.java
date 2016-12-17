@@ -15,24 +15,36 @@ public class TaxesCalculatorTest {
 	@Test
 	public void testGetSalesTaxes_exempt() {
 		IItem book = new Item(12.49, Categories.BOOK, false);
-		Assert.assertEquals(0, TaxesCalculator.getInstance().getSalesTaxes(book), delta);
+		try {
+			Assert.assertEquals(0, TaxesCalculator.getInstance().getSalesTaxes(book), delta);
+		} catch (UnableToCalculateTaxesException e) {
+			Assert.fail(e.getMessage());
+		}
 	}
 
 	@Test
 	public void testGetSalesTaxes_unexempt() {
 		IItem musicCD = new Item(14.99, Categories.MUSIC, false);
-		Assert.assertEquals(1.50, TaxesCalculator.getInstance().getSalesTaxes(musicCD), delta);
+		try {
+			Assert.assertEquals(1.50, TaxesCalculator.getInstance().getSalesTaxes(musicCD), delta);
+		} catch (UnableToCalculateTaxesException e) {
+			Assert.fail(e.getMessage());
+		}
 	}
 
 	@Test(expected = UnableToCalculateTaxesException.class)
-	public void testGetSalesTaxes_input0Imported() {
+	public void testGetSalesTaxes_input0Imported() throws UnableToCalculateTaxesException {
 		IItem book = new Item(12.49, Categories.BOOK, true);
 		TaxesCalculator.getInstance().getSalesTaxes(book);
 	}
 
 	@Test
 	public void testGetSalesTaxes_nullInput() {
-		Assert.assertEquals(0, TaxesCalculator.getInstance().getSalesTaxes(null), delta);
+		try {
+			Assert.assertEquals(0, TaxesCalculator.getInstance().getSalesTaxes(null), delta);
+		} catch (UnableToCalculateTaxesException e) {
+			Assert.fail(e.getMessage());
+		}
 	}
 
 }
