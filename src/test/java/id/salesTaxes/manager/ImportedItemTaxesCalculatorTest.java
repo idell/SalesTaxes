@@ -9,25 +9,25 @@ import id.salesTaxes.bean.interfaces.IItem;
 import id.salesTaxes.exception.UnableToCalculateTaxesException;
 
 public class ImportedItemTaxesCalculatorTest {
-	
+
 	private final double delta = 0.0;
-	
+
 	@Test
-	public void testGetSalesTaxes_choccolate() {
+	public void testGetSalesTaxes_choccolate() throws UnableToCalculateTaxesException {
 		IItem importedChoccolate = new Item(10.00, Categories.FOOD, true);
 
-		Assert.assertEquals(10.50, ImportedItemTaxesCalculator.getInstance().getSalesTaxes(importedChoccolate), delta);
+		Assert.assertEquals(0.50, ImportedItemTaxesCalculator.getInstance().getSalesTaxes(importedChoccolate), delta);
 	}
 
 	@Test(expected = UnableToCalculateTaxesException.class)
-	public void testGetSalesTaxes_choccolateNotImported() {
+	public void testGetSalesTaxes_choccolateNotImported() throws UnableToCalculateTaxesException {
 		IItem importedChoccolate = new Item(10.00, Categories.FOOD, false);
 
 		ImportedItemTaxesCalculator.getInstance().getSalesTaxes(importedChoccolate);
 	}
 
 	@Test
-	public void testGetSalesTaxes_null() {
+	public void testGetSalesTaxes_null() throws UnableToCalculateTaxesException {
 		Assert.assertEquals(0.0, ImportedItemTaxesCalculator.getInstance().getSalesTaxes(null), delta);
 	}
 

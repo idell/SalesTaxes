@@ -5,6 +5,7 @@ import id.salesTaxes.bean.interfaces.IItem;
 import id.salesTaxes.consts.Consts;
 import id.salesTaxes.exception.UnableToCalculateTaxesException;
 import id.salesTaxes.manager.interfaces.ITaxesCalculator;
+import id.salesTaxes.util.TaxesUtility;
 
 /**
  * Taxes Calculator Manger for items not imported
@@ -44,16 +45,8 @@ public class TaxesCalculator implements ITaxesCalculator {
 			return Consts.zero;
 		}
 
-		return roundTaxes(item.getNetPrice() * Consts.genericItemTaxRate);
+		return TaxesUtility.roundTaxes(item.getNetPrice() * Consts.genericItemTaxRate);
 	}
 
-	/**
-	 * Rounds taxes to the closes 0.05
-	 * @param taxes to be rounded
-	 * @return rounded taxes amount
-	 */
-	private static double roundTaxes(double taxes) {
-		return Math.round(taxes * Consts.roundingOperator) / Consts.roundingOperator;
-	}
 
 }
