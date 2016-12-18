@@ -9,26 +9,27 @@ import org.junit.Test;
 import id.salesTaxes.bean.Categories;
 import id.salesTaxes.bean.Item;
 import id.salesTaxes.bean.interfaces.IItem;
+import id.salesTaxes.exception.UnableToCalculateTaxesException;
 
 public class ReceiptCalculatorTest {
 
 	private final double delta = 0.0;
 
 	@Test
-	public void testCalculateTotal_emptyItems() {
+	public void testCalculateTotal_emptyItems() throws UnableToCalculateTaxesException {
 		ReceiptCalculator receiptCalculator = new ReceiptCalculator();
 		List<IItem> items = new ArrayList<IItem>();
 		Assert.assertEquals(0.0, receiptCalculator.calculateTotal(items), delta);
 	}
 
 	@Test
-	public void testCalculateTotal_nullItems() {
+	public void testCalculateTotal_nullItems() throws UnableToCalculateTaxesException {
 		ReceiptCalculator receiptCalculator = new ReceiptCalculator();
 		Assert.assertEquals(0.0, receiptCalculator.calculateTotal(null), delta);
 	}
 
 	@Test
-	public void testPrintReceipt_Input1() {
+	public void testCalculateTotal_Input1() throws UnableToCalculateTaxesException {
 		ReceiptCalculator receiptCalculator = new ReceiptCalculator();
 		List<IItem> items = new ArrayList<IItem>();
 
@@ -44,7 +45,7 @@ public class ReceiptCalculatorTest {
 	}
 
 	@Test
-	public void testPrintReceipt_Input2() {
+	public void testCalculateTotal_Input2() throws UnableToCalculateTaxesException {
 		ReceiptCalculator receiptCalculator = new ReceiptCalculator();
 		List<IItem> items = new ArrayList<IItem>();
 
@@ -58,7 +59,7 @@ public class ReceiptCalculatorTest {
 	}
 
 	@Test
-	public void testPrintReceipt_Input3() {
+	public void testPrintReceipt_Input3() throws UnableToCalculateTaxesException {
 		ReceiptCalculator receiptCalculator = new ReceiptCalculator();
 		List<IItem> items = new ArrayList<IItem>();
 
@@ -76,7 +77,7 @@ public class ReceiptCalculatorTest {
 	}
 
 	@Test
-	public void testPrintRecepit_nullItems() {
+	public void testPrintRecepit_nullItems() throws UnableToCalculateTaxesException {
 		ReceiptCalculator receiptCalculator = new ReceiptCalculator();
 		List<IItem> items = new ArrayList<IItem>();
 

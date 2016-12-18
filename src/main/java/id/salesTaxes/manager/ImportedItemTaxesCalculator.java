@@ -25,9 +25,10 @@ public class ImportedItemTaxesCalculator implements ITaxesCalculator {
 		}
 		return instance;
 	}
+
 	/**
-	 * @return the taxes amount of the 
-	 * @throws UnableToCalculateTaxesException 
+	 * @return the taxes amount of the
+	 * @throws UnableToCalculateTaxesException
 	 */
 	public double getSalesTaxes(IItem item) throws UnableToCalculateTaxesException {
 		if (item == null) {
@@ -36,13 +37,15 @@ public class ImportedItemTaxesCalculator implements ITaxesCalculator {
 		if (!item.isImported()) {
 			throw new UnableToCalculateTaxesException(Consts.UNIMPORTED_ITEM_ERR);
 		}
-		double taxes = 0.0;
+		double taxes = Consts.zero;
 		if (item.getCategory().equals(Categories.BOOK) || item.getCategory().equals(Categories.FOOD)
 				|| item.getCategory().equals(Categories.MEDICAL_PRODUCTS)) {
-			taxes = TaxesUtility.roundTaxes(item.getNetPrice() * Consts.importedItemTaxRate) ;
+			taxes = TaxesUtility.roundTaxes(item.getNetPrice() * Consts.importedItemTaxRate);
 			return taxes;
 		}
-		return taxes + TaxesUtility.roundTaxes(item.getNetPrice() * Consts.genericItemTaxRate) ;
+		double unroundedTotal = TaxesUtility.roundTaxes(item.getNetPrice() * Consts.importedItemTaxRate)
+				+ TaxesUtility.roundTaxes(item.getNetPrice() * Consts.genericItemTaxRate);
+		return unroundedTotal;
 
 	}
 

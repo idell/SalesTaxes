@@ -45,7 +45,8 @@ public class TaxesCalculator implements ITaxesCalculator {
 			return Consts.zero;
 		}
 
-		return TaxesUtility.roundTaxes(item.getNetPrice() * Consts.genericItemTaxRate);
+		double unroundedTotal = TaxesUtility.roundTaxes(item.getNetPrice() * Consts.genericItemTaxRate);
+		return unroundedTotal;
 	}
 
 
