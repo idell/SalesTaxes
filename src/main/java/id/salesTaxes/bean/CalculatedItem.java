@@ -9,13 +9,13 @@ public class CalculatedItem extends Item implements ICalculatedItem {
 	private int quantity = 0;
 
 	public CalculatedItem(IItem item, double taxesAmount) {
-		super(item.getNetPrice(), item.getCategory(), item.isImported());
+		super(item.getNetPrice(), item.getCategory(), item.isImported(), item.getDescription());
 		this.taxes = taxesAmount;
 		this.quantity = 1;
 	}
 
 	public CalculatedItem(IItem item, double taxes, int quantity) {
-		super(item.getNetPrice(), item.getCategory(), item.isImported());
+		super(item.getNetPrice(), item.getCategory(), item.isImported(), item.getDescription());
 		this.taxes = taxes;
 		this.quantity = quantity;
 	}

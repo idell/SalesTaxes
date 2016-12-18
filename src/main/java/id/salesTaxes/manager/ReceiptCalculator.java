@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import id.salesTaxes.bean.CalculatedItem;
+import id.salesTaxes.bean.Item;
 import id.salesTaxes.bean.interfaces.ICalculatedItem;
 import id.salesTaxes.bean.interfaces.IItem;
 import id.salesTaxes.consts.Consts;
@@ -12,10 +13,14 @@ import id.salesTaxes.exception.UnableToCalculateTaxesException;
 import id.salesTaxes.util.TaxesUtility;
 
 public class ReceiptCalculator {
-	private Map<IItem, ICalculatedItem> itemsMap = null;
+	private Map<IItem, ICalculatedItem> basket = null;
+	private double totalTaxes;
+	private double totalAmount;
 
 	public ReceiptCalculator() {
-		itemsMap = new HashMap<IItem, ICalculatedItem>();
+		basket = new HashMap<IItem, ICalculatedItem>();
+		totalTaxes = Consts.zero;
+		totalAmount = Consts.zero;
 	}
 
 	/**
@@ -33,56 +38,90 @@ public class ReceiptCalculator {
 		for (IItem item : items) {
 
 			double taxes = TaxesManagerFactory.getCalculator(item).getSalesTaxes(item);
-			if (itemsMap.containsKey(item)) {
-				ICalculatedItem calculated = calculateAddingItems(item, taxes);
-				itemsMap.put(item, calculated);
+			ICalculatedItem calculated = null;
+			if (basket.containsKey(item)) {
+				calculated = calculateAddingItems(item, taxes);
 			} else {
-				ICalculatedItem calculatedItem = new CalculatedItem(item, taxes);
-				itemsMap.put(item, calculatedItem);
+				calculated = new CalculatedItem(item, taxes);
 			}
+			basket.put(item, calculated);
 
 		}
 
 		return calculateTotalForReceipt();
 	}
-	
+
 	/**
 	 * Method to calculate taxes in order to add an existing item
-	 * @param item to be added
-	 * @param taxes value
-	 * @return 
+	 * 
+	 * @param item
+	 *            to be added
+	 * @param taxes
+	 *            value
+	 * @return
 	 */
 	private ICalculatedItem calculateAddingItems(IItem item, double taxes) {
 		ICalculatedItem calculated = new CalculatedItem(item, taxes);
-		double oldTaxes = itemsMap.get(item).getTaxes();
-		oldTaxes += taxes;
+		double oldTaxes = basket.get(item).getTaxes();
 		double newTaxes = oldTaxes + taxes;
-		int quantity = itemsMap.get(item).getQuantity();
+		int quantity = basket.get(item).getQuantity();
+		double singleNetPrice = TaxesUtility.roundTotal(item.getNetPrice()/quantity);
+		double newNetPrice = TaxesUtility.roundTotal(item.getNetPrice()+singleNetPrice);
 		quantity++;
-		calculated = new CalculatedItem(item, newTaxes, quantity);
+		Item itemAdded = new Item(newNetPrice, item.getCategory(),item.isImported(),item.getDescription());
+		calculated = new CalculatedItem(itemAdded, newTaxes, quantity);
 		return calculated;
-	}
-	
-	/**
-	 * Extract total amount for item in basket
-	 * @return total amount
-	 */
-	private double calculateTotalForReceipt() {
-		double total = Consts.zero;
-		for (ICalculatedItem calculatedItem : itemsMap.values()) {
-			total += calculatedItem.getNetPrice();
-			total += calculatedItem.getTaxes();
-		}
-		return TaxesUtility.roundTotal(total);
 	}
 
 	/**
-	 * Prints the receipt
+	 * Extract total amount for item in basket
+	 * 
+	 * @return total amount
+	 */
+	private double calculateTotalForReceipt() {
+		for (ICalculatedItem calculatedItem : basket.values()) {
+			totalAmount += calculatedItem.getNetPrice();
+			totalAmount += calculatedItem.getTaxes();
+			totalTaxes += calculatedItem.getTaxes();
+		}
+		totalAmount = TaxesUtility.roundTotal(totalAmount);
+		totalTaxes = TaxesUtility.roundTotal(totalTaxes);
+		return totalAmount;
+	}
+
+	/**
+	 * Prints the receipt and empty the basket
 	 * 
 	 * @return a String containing the receipt
 	 */
 	public String printReceipt() {
-		return null;
+		StringBuilder builder = new StringBuilder();
+		if (basket.isEmpty()){
+			return null;
+		}
+		for (ICalculatedItem calculatedItem : basket.values()) {
+			builder.append(String.valueOf(calculatedItem.getQuantity()));
+			builder.append(calculatedItem.isImported() ? Consts.IMPORTED : Consts.SPACE);
+			builder.append(calculatedItem.getDescription());
+			builder.append(Consts.COLON);
+			builder.append(
+					String.valueOf(TaxesUtility.roundTotal(calculatedItem.getNetPrice() + calculatedItem.getTaxes())));
+			builder.append(Consts.NL);
+		}
+		builder.append(Consts.SALES_TAXES);
+		builder.append(String.valueOf(totalTaxes));
+		builder.append(Consts.NL);
+		builder.append(Consts.TOTAL);
+		builder.append(String.valueOf(totalAmount));
+		
+		System.out.println(builder.toString());
+
+		basket.clear();
+		totalAmount = Consts.zero;
+		totalTaxes = Consts.zero;
+		
+		return builder.toString();
+
 	}
 
 }

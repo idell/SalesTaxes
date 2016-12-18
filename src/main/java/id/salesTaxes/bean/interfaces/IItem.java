@@ -9,5 +9,7 @@ public interface IItem {
 	public Categories getCategory();
 
 	public boolean isImported();
+	
+	public String getDescription();
 
 }
